@@ -5,9 +5,8 @@
  */
 export function invertObj(obj) {
     let str = '';
-    if(!obj){
-        return undefined;
-    }
+    if(!obj) return;
+    
     return Object.fromEntries(Object.entries(obj)
     .map(([key, value]) => [str = value, value = key, key = str]));
 }
