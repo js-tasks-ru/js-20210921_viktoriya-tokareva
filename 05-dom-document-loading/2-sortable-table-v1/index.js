@@ -4,7 +4,7 @@ export default class SortableTable {
 
   constructor(headersConfig = [], data = []) {
     this.headersConfig = headersConfig;
-    this.data = data;
+    this.data = Array.isArray(data) ? data : data.data;
 
     this.render();
   }

@@ -1,4 +1,5 @@
 export default class ColumnChart {
+    element;
     constructor({...args} = {}) {
         const {data = [], label = '', link = '', value = 0, chartHeight = 50} = args;
         this.data = data;
@@ -6,18 +7,15 @@ export default class ColumnChart {
         this.link = link;
         this.value = value;
         this.chartHeight = chartHeight;
-        this.element = this.render();
-        this.columnChart = this.element
+        this.render();
         this.renderChartContainer ();
     }
     
     render (){
         const formatHeadingValue =  this.formatHeading();
         const columnChart = document.createElement('div');
-        columnChart.classList.add('column-chart');
-        columnChart.style.cssText = `--chart-height: ${this.chartHeight}`;
         columnChart.innerHTML = `
-            
+            <div class="column-chart" style="--chart-height: 50">
                 <div class="column-chart__title">
                     Total ${this.label}
                     <a href="${this.link}" class="column-chart__link">View all</a>
@@ -26,12 +24,12 @@ export default class ColumnChart {
                     <div data-element="header" class="column-chart__header">${formatHeadingValue}</div>
                     <div data-element="body" class="column-chart__chart"></div>
                 </div>
+            </div>    
         `;
-        if (  this.data.length === 0 || this.data == undefined) {
-            columnChart.classList.add('column-chart_loading');
+        this.element = columnChart.firstElementChild;
+        if (  this.data.length === 0 || this.data === undefined) {
+            this.element.classList.add('column-chart_loading');
         } 
-
-        return columnChart;
     }
     
     renderChartContainer () {
@@ -39,7 +37,7 @@ export default class ColumnChart {
         const values = [];
         
         this.getColumnProps(this.data)
-        .map(item => Object.values(item).map(key => {
+        .forEach(item => Object.values(item).map(key => {
             key.includes('%') ? percents.push(key) : values.push(key)
         }));
 
@@ -52,7 +50,7 @@ export default class ColumnChart {
 
     getColumnProps(data) {
         const maxValue = Math.max(...data);
-        const scale = 50 / maxValue;
+        const scale = this.chartHeight / maxValue;
         
         return this.data.map(item => {
           return {
